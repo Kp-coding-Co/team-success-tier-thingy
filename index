@@ -1,0 +1,211 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Team Tier Dashboard</title>
+    <style>
+        :root {
+            --bg: #1a1a1a;
+            --tier-label-bg: #000;
+            --text: #fff;
+            --blue-bloods: #ff7f7f;
+            --great: #ffbf7f;
+            --good: #ffff7f;
+            --decent: #bfff7f;
+            --meh: #7fff7f;
+            --bad: #7fffbf;
+            --dogshit: #7ffffb;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .filter-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #222;
+            border-radius: 8px;
+        }
+
+        .nav-btn {
+            padding: 10px 25px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            background: #444;
+            color: white;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .nav-btn.active { background: #007bff; }
+
+        .tier-row {
+            display: flex;
+            margin-bottom: 5px;
+            min-height: 100px;
+            background: #111;
+        }
+
+        .tier-label {
+            width: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-weight: bold;
+            color: #000;
+            font-size: 0.9rem;
+            padding: 10px;
+        }
+
+        .tier-content {
+            flex-grow: 1;
+            display: flex;
+            flex-wrap: wrap;
+            padding: 10px;
+            gap: 15px;
+        }
+
+        .team-card {
+            width: 180px;
+            background: #2a2a2a;
+            border-radius: 6px;
+            padding: 10px;
+            font-size: 0.8rem;
+            transition: 0.2s;
+            border: 1px solid #333;
+        }
+
+        .team-name { font-weight: bold; margin-bottom: 5px; border-bottom: 1px solid #444; }
+        .league-tag { font-size: 0.7rem; color: #aaa; text-transform: uppercase; }
+        
+        .nhl-stats { font-size: 0.7rem; margin-top: 5px; color: #ddd; }
+        .stat-line { display: flex; justify-content: space-between; }
+
+        /* Tier Colors */
+        .bb { background-color: var(--blue-bloods); }
+        .gr { background-color: var(--great); }
+        .go { background-color: var(--good); }
+        .de { background-color: var(--decent); }
+        .me { background-color: var(--meh); }
+        .ba { background-color: var(--bad); }
+        .ds { background-color: var(--dogshit); }
+
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="filter-header">
+    <h1>TEAM TIER FINDER</h1>
+    <button class="nav-btn active" onclick="filter('all', this)">ALL</button>
+    <button class="nav-btn" onclick="filter('nba', this)">NBA</button>
+    <button class="nav-btn" onclick="filter('mlb', this)">MLB</button>
+    <button class="nav-btn" onclick="filter('nfl', this)">NFL</button>
+    <button class="nav-btn" onclick="filter('nhl', this)">NHL</button>
+</div>
+
+<div class="tier-row">
+    <div class="tier-label bb">Blue Bloods</div>
+    <div class="tier-content">
+        <div class="team-card" data-league="mlb"><div class="team-name">Boston Red Sox</div><span class="league-tag">MLB</span></div>
+        <div class="team-card" data-league="nhl">
+            <div class="team-name">Colorado Avalanche</div><span class="league-tag">NHL</span>
+            <div class="nhl-stats">
+                <div class="stat-line"><span>GP: 82</span><span>W: 52</span></div>
+                <div class="stat-line"><span>Win%: 63.4%</span></div>
+                <div class="stat-line"><span>GF: 300</span><span>GA: 254</span></div>
+                <div class="stat-line"><span>Total G: 554</span></div>
+                <div class="stat-line"><span>G/GP: 6.75</span></div>
+            </div>
+        </div>
+        <div class="team-card" data-league="nba"><div class="team-name">Golden State Warriors</div><span class="league-tag">NBA</span></div>
+        <div class="team-card" data-league="nfl"><div class="team-name">KC Chiefs</div><span class="league-tag">NFL</span></div>
+        <div class="team-card" data-league="nhl">
+            <div class="team-name">Tampa Bay Lightning</div><span class="league-tag">NHL</span>
+            <div class="nhl-stats">
+                <div class="stat-line"><span>GP: 82</span><span>W: 45</span></div>
+                <div class="stat-line"><span>Win%: 54.8%</span></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="tier-row">
+    <div class="tier-label gr">Great</div>
+    <div class="tier-content">
+        <div class="team-card" data-league="nba"><div class="team-name">Boston Celtics</div><span class="league-tag">NBA</span></div>
+        <div class="team-card" data-league="nfl"><div class="team-name">Green Bay Packers</div><span class="league-tag">NFL</span></div>
+        <div class="team-card" data-league="mlb"><div class="team-name">NY Yankees</div><span class="league-tag">MLB</span></div>
+        <div class="team-card" data-league="nfl"><div class="team-name">Pittsburgh Steelers</div><span class="league-tag">NFL</span></div>
+    </div>
+</div>
+
+<div class="tier-row">
+    <div class="tier-label go">Good</div>
+    <div class="tier-content">
+        <div class="team-card" data-league="nhl">
+            <div class="team-name">Detroit Red Wings</div><span class="league-tag">NHL</span>
+            <div class="nhl-stats">
+                <div class="stat-line"><span>GP: 82</span><span>W: 41</span></div>
+                <div class="stat-line"><span>Win%: 50.0%</span></div>
+            </div>
+        </div>
+        <div class="team-card" data-league="nba"><div class="team-name">Denver Nuggets</div><span class="league-tag">NBA</span></div>
+        <div class="team-card" data-league="nfl"><div class="team-name">SF 49ers</div><span class="league-tag">NFL</span></div>
+    </div>
+</div>
+
+<div class="tier-row">
+    <div class="tier-label ba">Bad</div>
+    <div class="tier-content">
+        <div class="team-card" data-league="nhl">
+            <div class="team-name">Toronto Maple Leafs</div><span class="league-tag">NHL</span>
+            <div class="nhl-stats">
+                <div class="stat-line"><span>GP: 82</span><span>W: 46</span></div>
+                <div class="stat-line"><span>Win%: 56.1%</span></div>
+            </div>
+        </div>
+        <div class="team-card" data-league="nba"><div class="team-name">Brooklyn Nets</div><span class="league-tag">NBA</span></div>
+        <div class="team-card" data-league="nfl"><div class="team-name">Detroit Lions</div><span class="league-tag">NFL</span></div>
+    </div>
+</div>
+
+<script>
+    function filter(league, btn) {
+        // Update Buttons
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        // Filter Cards
+        const cards = document.querySelectorAll('.team-card');
+        cards.forEach(card => {
+            if (league === 'all' || card.getAttribute('data-league') === league) {
+                card.classList.remove('hidden');
+            } else {
+                card.classList.add('hidden');
+            }
+        });
+
+        // Hide Empty Tiers
+        document.querySelectorAll('.tier-row').forEach(row => {
+            const visibleCards = row.querySelectorAll('.team-card:not(.hidden)');
+            if (visibleCards.length === 0) {
+                row.classList.add('hidden');
+            } else {
+                row.classList.remove('hidden');
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
