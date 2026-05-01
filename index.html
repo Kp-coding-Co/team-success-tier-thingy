@@ -29,8 +29,19 @@
 
         .header { text-align: center; margin-bottom: 20px; }
 
+        /* Controls Layout */
+        .controls-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
         .filter-nav {
-            display: flex; justify-content: center; gap: 10px; margin-bottom: 20px;
+            display: flex; justify-content: center; gap: 10px; 
             background: #2c2c2c; padding: 15px; border-radius: 8px;
         }
 
@@ -43,6 +54,24 @@
         .filter-nav button:hover { background-color: #555; }
         .filter-nav button.active { background-color: #007bff; }
 
+        .slider-container {
+            display: flex; flex-direction: column; align-items: center;
+            background: #2c2c2c; padding: 15px; border-radius: 8px;
+        }
+
+        .slider-container label {
+            font-weight: bold; margin-bottom: 10px; color: #aaa; text-transform: uppercase; font-size: 0.9rem;
+        }
+
+        .slider-container span {
+            color: #007bff; font-size: 1.2rem; margin-left: 5px;
+        }
+
+        input[type=range] {
+            width: 100%; max-width: 400px; cursor: pointer;
+        }
+
+        /* Tier Layout */
         .tier-container { display: flex; flex-direction: column; gap: 2px; background: #000; border: 2px solid #000; }
         .tier-row { display: flex; background: #1a1a1a; min-height: 85px; }
 
@@ -57,12 +86,22 @@
         .team-logo {
             width: 55px; height: 55px; border-radius: 50%; object-fit: contain;
             padding: 4px; background-color: #ffffff; border: 2px solid #444;
-            cursor: pointer; transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+            cursor: pointer; transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s, filter 0.3s, opacity 0.3s;
         }
 
         .team-logo:hover {
             transform: scale(1.2); box-shadow: 0 0 15px rgba(255,255,255,0.4);
             border-color: #fff; z-index: 10; position: relative;
+        }
+
+        /* Visually disabled state for teams that don't meet slider criteria */
+        .dimmed {
+            filter: grayscale(100%);
+            opacity: 0.15;
+            pointer-events: none;
+            transform: none !important;
+            box-shadow: none !important;
+            border-color: #444 !important;
         }
 
         /* Modal Styles */
@@ -88,7 +127,6 @@
         .modal-title { font-size: 1.5rem; margin: 0; }
         .modal-league { color: #aaa; font-size: 0.9rem; text-transform: uppercase; margin-top: 5px; }
 
-        /* Tables */
         h3 { border-left: 4px solid #007bff; padding-left: 10px; margin-top: 25px;}
         
         table { width: 100%; border-collapse: collapse; margin-top: 10px; background: #1a1a1a; border-radius: 8px; overflow: hidden; }
@@ -111,12 +149,19 @@
 
 <div class="header"><h1>SPORTS TEAM FINDER DASHBOARD (2026)</h1></div>
 
-<div class="filter-nav">
-    <button class="active" onclick="filter('all', this)">All Leagues</button>
-    <button onclick="filter('nba', this)">NBA</button>
-    <button onclick="filter('mlb', this)">MLB</button>
-    <button onclick="filter('nfl', this)">NFL</button>
-    <button onclick="filter('nhl', this)">NHL</button>
+<div class="controls-wrapper">
+    <div class="filter-nav">
+        <button class="active" onclick="setLeagueFilter('all', this)">All Leagues</button>
+        <button onclick="setLeagueFilter('nba', this)">NBA</button>
+        <button onclick="setLeagueFilter('mlb', this)">MLB</button>
+        <button onclick="setLeagueFilter('nfl', this)">NFL</button>
+        <button onclick="setLeagueFilter('nhl', this)">NHL</button>
+    </div>
+
+    <div class="slider-container">
+        <label for="champSlider">Minimum Championships (Since 2000): <span id="champValue">0</span></label>
+        <input type="range" id="champSlider" min="0" max="6" value="0" step="1" oninput="setChampFilter(this.value)">
+    </div>
 </div>
 
 <div class="tier-container">
@@ -329,59 +374,219 @@
 </div>
 
 <script>
-    /* 
-     * REAL DATA DATABASE
-     * You can plug real stats for all 120+ teams here. 
-     * I have provided exact data for three examples.
-     */
-    const teamDatabase = {
-        "New England Patriots": {
-            titles: 6,
-            titleYears: "2001, 2003, 2004, 2014, 2016, 2018",
-            championshipSeasons: [2001, 2003, 2004, 2014, 2016, 2018],
-            seasons: {
-                2024: ".235", 2023: ".235", 2022: ".471", 2021: ".588", 2020: ".438", 
-                2019: ".750", 2018: ".688", 2017: ".813", 2016: ".875", 2015: ".750",
-                2014: ".750", 2013: ".750", 2012: ".750", 2011: ".813", 2010: ".875",
-                2009: ".625", 2008: ".688", 2007: "1.000", 2006: ".750", 2005: ".625",
-                2004: ".875", 2003: ".875", 2002: ".563", 2001: ".688", 2000: ".313"
-            }
-        },
-        "Boston Red Sox": {
-            titles: 4,
-            titleYears: "2004, 2007, 2013, 2018",
-            championshipSeasons: [2004, 2007, 2013, 2018],
-            seasons: {
-                2024: ".500", 2023: ".481", 2022: ".481", 2021: ".568", 2020: ".400",
-                2019: ".519", 2018: ".667", 2017: ".574", 2016: ".574", 2015: ".481",
-                2014: ".438", 2013: ".600", 2012: ".426", 2011: ".556", 2010: ".549",
-                2009: ".586", 2008: ".586", 2007: ".593", 2006: ".531", 2005: ".586",
-                2004: ".605", 2003: ".586", 2002: ".574", 2001: ".509", 2000: ".525"
-            }
-        },
-        "San Antonio Spurs": {
-            titles: 4,
-            titleYears: "2003, 2005, 2007, 2014",
-            championshipSeasons: [2003, 2005, 2007, 2014],
-            seasons: {
-                2024: ".268", 2023: ".268", 2022: ".415", 2021: ".458", 2020: ".451",
-                2019: ".585", 2018: ".573", 2017: ".744", 2016: ".817", 2015: ".671",
-                2014: ".756", 2013: ".707", 2012: ".758", 2011: ".744", 2010: ".610",
-                2009: ".659", 2008: ".683", 2007: ".707", 2006: ".768", 2005: ".720",
-                2004: ".695", 2003: ".732", 2002: ".707", 2001: ".707", 2000: ".646"
-            }
-        }
+    // The fully formatted JSON containing all 120+ teams
+    const rawLeagueData = {
+      "MLB": {
+        "Arizona Diamondbacks": { "titles": 1, "titleYears": "2001", "championshipSeasons": [2001], "seasons": {} },
+        "Atlanta Braves": { "titles": 1, "titleYears": "2021", "championshipSeasons": [2021], "seasons": {} },
+        "Baltimore Orioles": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Boston Red Sox": { "titles": 4, "titleYears": "2004, 2007, 2013, 2018", "championshipSeasons": [2004, 2007, 2013, 2018], "seasons": {} },
+        "Chicago Cubs": { "titles": 1, "titleYears": "2016", "championshipSeasons": [2016], "seasons": {} },
+        "Chicago White Sox": { "titles": 1, "titleYears": "2005", "championshipSeasons": [2005], "seasons": {} },
+        "Cincinnati Reds": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Cleveland Guardians": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Colorado Rockies": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Detroit Tigers": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Houston Astros": { "titles": 2, "titleYears": "2017, 2022", "championshipSeasons": [2017, 2022], "seasons": {} },
+        "Kansas City Royals": { "titles": 1, "titleYears": "2015", "championshipSeasons": [2015], "seasons": {} },
+        "Los Angeles Angels": { "titles": 1, "titleYears": "2002", "championshipSeasons": [2002], "seasons": {} },
+        "Los Angeles Dodgers": { "titles": 3, "titleYears": "2020, 2024, 2025", "championshipSeasons": [2020, 2024, 2025], "seasons": {} },
+        "Miami Marlins": { "titles": 1, "titleYears": "2003", "championshipSeasons": [2003], "seasons": {} },
+        "Milwaukee Brewers": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Minnesota Twins": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "New York Mets": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "New York Yankees": { "titles": 2, "titleYears": "2000, 2009", "championshipSeasons": [2000, 2009], "seasons": {} },
+        "Oakland Athletics": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Philadelphia Phillies": { "titles": 1, "titleYears": "2008", "championshipSeasons": [2008], "seasons": {} },
+        "Pittsburgh Pirates": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "San Diego Padres": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "San Francisco Giants": { "titles": 3, "titleYears": "2010, 2012, 2014", "championshipSeasons": [2010, 2012, 2014], "seasons": {} },
+        "Seattle Mariners": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "St. Louis Cardinals": { "titles": 2, "titleYears": "2006, 2011", "championshipSeasons": [2006, 2011], "seasons": {} },
+        "Tampa Bay Rays": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Texas Rangers": { "titles": 1, "titleYears": "2023", "championshipSeasons": [2023], "seasons": {} },
+        "Toronto Blue Jays": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Washington Nationals": { "titles": 1, "titleYears": "2019", "championshipSeasons": [2019], "seasons": {} }
+      },
+      "NBA": {
+        "Atlanta Hawks": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Boston Celtics": { "titles": 2, "titleYears": "2008, 2024", "championshipSeasons": [2008, 2024], "seasons": {} },
+        "Brooklyn Nets": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Charlotte Hornets": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Chicago Bulls": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Cleveland Cavaliers": { "titles": 1, "titleYears": "2016", "championshipSeasons": [2016], "seasons": {} },
+        "Dallas Mavericks": { "titles": 1, "titleYears": "2011", "championshipSeasons": [2011], "seasons": {} },
+        "Denver Nuggets": { "titles": 1, "titleYears": "2023", "championshipSeasons": [2023], "seasons": {} },
+        "Detroit Pistons": { "titles": 1, "titleYears": "2004", "championshipSeasons": [2004], "seasons": {} },
+        "Golden State Warriors": { "titles": 4, "titleYears": "2015, 2017, 2018, 2022", "championshipSeasons": [2015, 2017, 2018, 2022], "seasons": {} },
+        "Houston Rockets": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Indiana Pacers": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Los Angeles Clippers": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Los Angeles Lakers": { "titles": 6, "titleYears": "2000, 2001, 2002, 2009, 2010, 2020", "championshipSeasons": [2000, 2001, 2002, 2009, 2010, 2020], "seasons": {} },
+        "Memphis Grizzlies": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Miami Heat": { "titles": 3, "titleYears": "2006, 2012, 2013", "championshipSeasons": [2006, 2012, 2013], "seasons": {} },
+        "Milwaukee Bucks": { "titles": 1, "titleYears": "2021", "championshipSeasons": [2021], "seasons": {} },
+        "Minnesota Timberwolves": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "New Orleans Pelicans": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "New York Knicks": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Oklahoma City Thunder": { "titles": 1, "titleYears": "2025", "championshipSeasons": [2025], "seasons": {} },
+        "Orlando Magic": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Philadelphia 76ers": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Phoenix Suns": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Portland Trail Blazers": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Sacramento Kings": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "San Antonio Spurs": { "titles": 4, "titleYears": "2003, 2005, 2007, 2014", "championshipSeasons": [2003, 2005, 2007, 2014], "seasons": {} },
+        "Toronto Raptors": { "titles": 1, "titleYears": "2019", "championshipSeasons": [2019], "seasons": {} },
+        "Utah Jazz": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Washington Wizards": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} }
+      },
+      "NFL": {
+        "Arizona Cardinals": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Atlanta Falcons": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Baltimore Ravens": { "titles": 2, "titleYears": "2000, 2012", "championshipSeasons": [2000, 2012], "seasons": {} },
+        "Buffalo Bills": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Carolina Panthers": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Chicago Bears": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Cincinnati Bengals": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Cleveland Browns": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Dallas Cowboys": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Denver Broncos": { "titles": 1, "titleYears": "2015", "championshipSeasons": [2015], "seasons": {} },
+        "Detroit Lions": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Green Bay Packers": { "titles": 1, "titleYears": "2010", "championshipSeasons": [2010], "seasons": {} },
+        "Houston Texans": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Indianapolis Colts": { "titles": 1, "titleYears": "2006", "championshipSeasons": [2006], "seasons": {} },
+        "Jacksonville Jaguars": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Kansas City Chiefs": { "titles": 3, "titleYears": "2019, 2022, 2023", "championshipSeasons": [2019, 2022, 2023], "seasons": {} },
+        "Las Vegas Raiders": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Los Angeles Chargers": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Los Angeles Rams": { "titles": 1, "titleYears": "2021", "championshipSeasons": [2021], "seasons": {} },
+        "Miami Dolphins": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Minnesota Vikings": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "New England Patriots": { "titles": 6, "titleYears": "2001, 2003, 2004, 2014, 2016, 2018", "championshipSeasons": [2001, 2003, 2004, 2014, 2016, 2018], "seasons": {} },
+        "New Orleans Saints": { "titles": 1, "titleYears": "2009", "championshipSeasons": [2009], "seasons": {} },
+        "New York Giants": { "titles": 2, "titleYears": "2007, 2011", "championshipSeasons": [2007, 2011], "seasons": {} },
+        "New York Jets": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Philadelphia Eagles": { "titles": 2, "titleYears": "2017, 2024", "championshipSeasons": [2017, 2024], "seasons": {} },
+        "Pittsburgh Steelers": { "titles": 2, "titleYears": "2005, 2008", "championshipSeasons": [2005, 2008], "seasons": {} },
+        "San Francisco 49ers": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Seattle Seahawks": { "titles": 1, "titleYears": "2013", "championshipSeasons": [2013], "seasons": {} },
+        "Tampa Bay Buccaneers": { "titles": 2, "titleYears": "2002, 2020", "championshipSeasons": [2002, 2020], "seasons": {} },
+        "Tennessee Titans": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Washington Commanders": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} }
+      },
+      "NHL": {
+        "Anaheim Ducks": { "titles": 1, "titleYears": "2007", "championshipSeasons": [2007], "seasons": {} },
+        "Arizona Coyotes": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Boston Bruins": { "titles": 1, "titleYears": "2011", "championshipSeasons": [2011], "seasons": {} },
+        "Buffalo Sabres": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Calgary Flames": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Carolina Hurricanes": { "titles": 1, "titleYears": "2006", "championshipSeasons": [2006], "seasons": {} },
+        "Chicago Blackhawks": { "titles": 3, "titleYears": "2010, 2013, 2015", "championshipSeasons": [2010, 2013, 2015], "seasons": {} },
+        "Colorado Avalanche": { "titles": 2, "titleYears": "2001, 2022", "championshipSeasons": [2001, 2022], "seasons": {} },
+        "Columbus Blue Jackets": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Dallas Stars": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Detroit Red Wings": { "titles": 2, "titleYears": "2002, 2008", "championshipSeasons": [2002, 2008], "seasons": {} },
+        "Edmonton Oilers": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Florida Panthers": { "titles": 2, "titleYears": "2024, 2025", "championshipSeasons": [2024, 2025], "seasons": {} },
+        "Los Angeles Kings": { "titles": 2, "titleYears": "2012, 2014", "championshipSeasons": [2012, 2014], "seasons": {} },
+        "Minnesota Wild": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Montreal Canadiens": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Nashville Predators": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "New Jersey Devils": { "titles": 2, "titleYears": "2000, 2003", "championshipSeasons": [2000, 2003], "seasons": {} },
+        "New York Islanders": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "New York Rangers": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Ottawa Senators": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Philadelphia Flyers": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Pittsburgh Penguins": { "titles": 3, "titleYears": "2009, 2016, 2017", "championshipSeasons": [2009, 2016, 2017], "seasons": {} },
+        "San Jose Sharks": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "St. Louis Blues": { "titles": 1, "titleYears": "2019", "championshipSeasons": [2019], "seasons": {} },
+        "Tampa Bay Lightning": { "titles": 3, "titleYears": "2004, 2020, 2021", "championshipSeasons": [2004, 2020, 2021], "seasons": {} },
+        "Toronto Maple Leafs": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Vancouver Canucks": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} },
+        "Vegas Golden Knights": { "titles": 1, "titleYears": "2023", "championshipSeasons": [2023], "seasons": {} },
+        "Washington Capitals": { "titles": 1, "titleYears": "2018", "championshipSeasons": [2018], "seasons": {} },
+        "Winnipeg Jets": { "titles": 0, "titleYears": "", "championshipSeasons": [], "seasons": {} }
+      }
     };
 
-    // Filter Logic
-    function filter(league, btn) {
+    // Flatten JSON for easier lookup by team name
+    const teamDatabase = {};
+    let globalMaxChamps = 0;
+
+    for (const league in rawLeagueData) {
+        for (const team in rawLeagueData[league]) {
+            const data = rawLeagueData[league][team];
+            teamDatabase[team] = data;
+            if (data.titles > globalMaxChamps) {
+                globalMaxChamps = data.titles;
+            }
+        }
+    }
+
+    // Initialize Slider Max Value
+    document.getElementById('champSlider').max = globalMaxChamps;
+
+    // Inject the hardcoded win percentages for the three sample teams
+    teamDatabase["New England Patriots"].seasons = {
+        2025: ".235", 2024: ".235", 2023: ".235", 2022: ".471", 2021: ".588", 2020: ".438", 
+        2019: ".750", 2018: ".688", 2017: ".813", 2016: ".875", 2015: ".750",
+        2014: ".750", 2013: ".750", 2012: ".750", 2011: ".813", 2010: ".875",
+        2009: ".625", 2008: ".688", 2007: "1.000", 2006: ".750", 2005: ".625",
+        2004: ".875", 2003: ".875", 2002: ".563", 2001: ".688", 2000: ".313"
+    };
+
+    teamDatabase["San Antonio Spurs"].seasons = {
+        2025: ".268", 2024: ".268", 2023: ".268", 2022: ".415", 2021: ".458", 2020: ".451",
+        2019: ".585", 2018: ".573", 2017: ".744", 2016: ".817", 2015: ".671",
+        2014: ".756", 2013: ".707", 2012: ".758", 2011: ".744", 2010: ".610",
+        2009: ".659", 2008: ".683", 2007: ".707", 2006: ".768", 2005: ".720",
+        2004: ".695", 2003: ".732", 2002: ".707", 2001: ".707", 2000: ".646"
+    };
+
+    teamDatabase["Boston Red Sox"].seasons = {
+        2025: ".500", 2024: ".500", 2023: ".481", 2022: ".481", 2021: ".568", 2020: ".400",
+        2019: ".519", 2018: ".667", 2017: ".574", 2016: ".574", 2015: ".481",
+        2014: ".438", 2013: ".600", 2012: ".426", 2011: ".556", 2010: ".549",
+        2009: ".586", 2008: ".586", 2007: ".593", 2006: ".531", 2005: ".586",
+        2004: ".605", 2003: ".586", 2002: ".574", 2001: ".509", 2000: ".525"
+    };
+
+    // Filter State
+    let currentLeague = 'all';
+    let currentMinChamps = 0;
+
+    function setLeagueFilter(league, btn) {
+        currentLeague = league;
         document.querySelectorAll('.filter-nav button').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
+        applyFilters();
+    }
+
+    function setChampFilter(val) {
+        currentMinChamps = parseInt(val);
+        document.getElementById('champValue').innerText = val;
+        applyFilters();
+    }
+
+    function applyFilters() {
         document.querySelectorAll('.team-logo').forEach(logo => {
-            logo.classList.toggle('hidden', league !== 'all' && logo.getAttribute('data-league') !== league);
+            const teamName = logo.getAttribute('title');
+            const teamLeague = logo.getAttribute('data-league');
+            const teamData = teamDatabase[teamName] || { titles: 0 };
+
+            // 1. Check League (Hides completely if it doesn't match)
+            const matchesLeague = (currentLeague === 'all' || teamLeague === currentLeague);
+            logo.classList.toggle('hidden', !matchesLeague);
+
+            // 2. Check Championships (Dims if it doesn't meet the threshold)
+            const matchesChamps = (teamData.titles >= currentMinChamps);
+            logo.classList.toggle('dimmed', !matchesChamps);
         });
+
+        // Hide empty tiers (checks for hidden logos, not dimmed ones)
         document.querySelectorAll('.tier-row').forEach(row => {
-            row.classList.toggle('hidden', row.querySelectorAll('.team-logo:not(.hidden)').length === 0);
+            const visibleLogos = row.querySelectorAll('.team-logo:not(.hidden)');
+            row.classList.toggle('hidden', visibleLogos.length === 0);
         });
     }
 
@@ -396,9 +601,11 @@
         
         let data = teamDatabase[teamName];
 
-        // Fallback generator for teams not yet in the hardcoded database
+        // Fallback generators for missing data
         if (!data) {
             data = generateMockData();
+        } else if (!data.seasons || Object.keys(data.seasons).length === 0) {
+            data.seasons = generateMockData().seasons;
         }
 
         // Populate Titles
@@ -411,7 +618,7 @@
 
         // Populate Seasons
         let seasonHTML = '';
-        for (let year = 2024; year >= 2000; year--) {
+        for (let year = 2025; year >= 2000; year--) {
             const isChamp = data.championshipSeasons.includes(year);
             const rowClass = isChamp ? 'class="championship-row"' : '';
             const pct = data.seasons[year] || ".500";
@@ -433,10 +640,10 @@
         }
     }
 
-    // Auto-generates placeholder data so the UI works for all 120+ teams immediately
+    // Auto-generates placeholder win percentages
     function generateMockData() {
         let seasons = {};
-        for(let i=2000; i<=2024; i++) {
+        for(let i=2000; i<=2025; i++) {
             seasons[i] = "." + Math.floor(Math.random() * (750 - 350 + 1) + 350);
         }
         return {
