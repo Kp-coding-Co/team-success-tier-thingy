@@ -1,13 +1,13 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Team Tier Dashboard</title>
+    <title>Sports Team Finder Dashboard</title>
     <style>
         :root {
-            --bg: #1a1a1a;
-            --tier-label-bg: #000;
-            --text: #fff;
+            --bg: #1e1e1e;
+            --text: #ffffff;
             --blue-bloods: #ff7f7f;
             --great: #ffbf7f;
             --good: #ffff7f;
@@ -15,80 +15,106 @@
             --meh: #7fff7f;
             --bad: #7fffbf;
             --dogshit: #7ffffb;
+            --too-new: #7fbfff;
         }
 
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: Arial, sans-serif;
             background-color: var(--bg);
             color: var(--text);
             margin: 0;
             padding: 20px;
         }
 
-        .filter-header {
+        .header {
             text-align: center;
-            margin-bottom: 30px;
-            padding: 20px;
-            background: #222;
+            margin-bottom: 20px;
+        }
+
+        .filter-nav {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            background: #2c2c2c;
+            padding: 15px;
             border-radius: 8px;
         }
 
-        .nav-btn {
-            padding: 10px 25px;
-            margin: 5px;
+        .filter-nav button {
+            padding: 10px 20px;
             border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            background: #444;
+            border-radius: 5px;
+            background-color: #444;
             color: white;
+            cursor: pointer;
             font-weight: bold;
-            transition: 0.3s;
+            text-transform: uppercase;
+            transition: background-color 0.2s;
         }
 
-        .nav-btn.active { background: #007bff; }
+        .filter-nav button:hover {
+            background-color: #555;
+        }
+
+        .filter-nav button.active {
+            background-color: #007bff;
+        }
+
+        .tier-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            background: #000;
+            border: 2px solid #000;
+        }
 
         .tier-row {
             display: flex;
-            margin-bottom: 5px;
-            min-height: 100px;
-            background: #111;
+            background: #1a1a1a;
+            min-height: 85px;
         }
 
         .tier-label {
-            width: 120px;
+            width: 100px;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
             font-weight: bold;
             color: #000;
-            font-size: 0.9rem;
             padding: 10px;
+            flex-shrink: 0;
+            border-right: 2px solid #000;
+            font-size: 0.9rem;
         }
 
         .tier-content {
-            flex-grow: 1;
             display: flex;
             flex-wrap: wrap;
             padding: 10px;
-            gap: 15px;
+            gap: 10px;
+            flex-grow: 1;
+            align-items: center;
         }
 
-        .team-card {
-            width: 180px;
-            background: #2a2a2a;
-            border-radius: 6px;
-            padding: 10px;
-            font-size: 0.8rem;
-            transition: 0.2s;
-            border: 1px solid #333;
+        /* Circular Logo Style */
+        .team-logo {
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #333;
+            background-color: #fff;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
 
-        .team-name { font-weight: bold; margin-bottom: 5px; border-bottom: 1px solid #444; }
-        .league-tag { font-size: 0.7rem; color: #aaa; text-transform: uppercase; }
-        
-        .nhl-stats { font-size: 0.7rem; margin-top: 5px; color: #ddd; }
-        .stat-line { display: flex; justify-content: space-between; }
+        .team-logo:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 10px rgba(255,255,255,0.5);
+            border-color: #fff;
+        }
 
         /* Tier Colors */
         .bb { background-color: var(--blue-bloods); }
@@ -98,107 +124,93 @@
         .me { background-color: var(--meh); }
         .ba { background-color: var(--bad); }
         .ds { background-color: var(--dogshit); }
+        .tn { background-color: var(--too-new); }
 
-        .hidden { display: none; }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-<div class="filter-header">
-    <h1>TEAM TIER FINDER</h1>
-    <button class="nav-btn active" onclick="filter('all', this)">ALL</button>
-    <button class="nav-btn" onclick="filter('nba', this)">NBA</button>
-    <button class="nav-btn" onclick="filter('mlb', this)">MLB</button>
-    <button class="nav-btn" onclick="filter('nfl', this)">NFL</button>
-    <button class="nav-btn" onclick="filter('nhl', this)">NHL</button>
+<div class="header">
+    <h1>SPORTS TEAM FINDER DASHBOARD (2026)</h1>
 </div>
 
-<div class="tier-row">
-    <div class="tier-label bb">Blue Bloods</div>
-    <div class="tier-content">
-        <div class="team-card" data-league="mlb"><div class="team-name">Boston Red Sox</div><span class="league-tag">MLB</span></div>
-        <div class="team-card" data-league="nhl">
-            <div class="team-name">Colorado Avalanche</div><span class="league-tag">NHL</span>
-            <div class="nhl-stats">
-                <div class="stat-line"><span>GP: 82</span><span>W: 52</span></div>
-                <div class="stat-line"><span>Win%: 63.4%</span></div>
-                <div class="stat-line"><span>GF: 300</span><span>GA: 254</span></div>
-                <div class="stat-line"><span>Total G: 554</span></div>
-                <div class="stat-line"><span>G/GP: 6.75</span></div>
-            </div>
-        </div>
-        <div class="team-card" data-league="nba"><div class="team-name">Golden State Warriors</div><span class="league-tag">NBA</span></div>
-        <div class="team-card" data-league="nfl"><div class="team-name">KC Chiefs</div><span class="league-tag">NFL</span></div>
-        <div class="team-card" data-league="nhl">
-            <div class="team-name">Tampa Bay Lightning</div><span class="league-tag">NHL</span>
-            <div class="nhl-stats">
-                <div class="stat-line"><span>GP: 82</span><span>W: 45</span></div>
-                <div class="stat-line"><span>Win%: 54.8%</span></div>
-            </div>
+<div class="filter-nav">
+    <button class="active" onclick="filter('all', this)">All Leagues</button>
+    <button onclick="filter('nba', this)">NBA</button>
+    <button onclick="filter('mlb', this)">MLB</button>
+    <button onclick="filter('nfl', this)">NFL</button>
+    <button onclick="filter('nhl', this)">NHL</button>
+</div>
+
+<div class="tier-container">
+    <!-- Blue Bloods -->
+    <div class="tier-row">
+        <div class="tier-label bb">Blue Bloods</div>
+        <div class="tier-content">
+            <!-- Replace the src links below with your actual image URLs -->
+            <img src="https://placehold.co/100x100/BD3039/fff?text=BOS" class="team-logo" data-league="mlb" title="Boston Red Sox">
+            <img src="https://placehold.co/100x100/6F263D/fff?text=COL" class="team-logo" data-league="nhl" title="Colorado Avalanche">
+            <img src="https://placehold.co/100x100/1D428A/ffc72c?text=GSW" class="team-logo" data-league="nba" title="Golden State Warriors">
+            <img src="https://placehold.co/100x100/E31837/fff?text=KC" class="team-logo" data-league="nfl" title="Kansas City Chiefs">
+            <img src="https://placehold.co/100x100/002868/fff?text=NE" class="team-logo" data-league="nfl" title="New England Patriots">
+            <img src="https://placehold.co/100x100/002868/fff?text=TB" class="team-logo" data-league="nhl" title="Tampa Bay Lightning">
         </div>
     </div>
-</div>
 
-<div class="tier-row">
-    <div class="tier-label gr">Great</div>
-    <div class="tier-content">
-        <div class="team-card" data-league="nba"><div class="team-name">Boston Celtics</div><span class="league-tag">NBA</span></div>
-        <div class="team-card" data-league="nfl"><div class="team-name">Green Bay Packers</div><span class="league-tag">NFL</span></div>
-        <div class="team-card" data-league="mlb"><div class="team-name">NY Yankees</div><span class="league-tag">MLB</span></div>
-        <div class="team-card" data-league="nfl"><div class="team-name">Pittsburgh Steelers</div><span class="league-tag">NFL</span></div>
-    </div>
-</div>
-
-<div class="tier-row">
-    <div class="tier-label go">Good</div>
-    <div class="tier-content">
-        <div class="team-card" data-league="nhl">
-            <div class="team-name">Detroit Red Wings</div><span class="league-tag">NHL</span>
-            <div class="nhl-stats">
-                <div class="stat-line"><span>GP: 82</span><span>W: 41</span></div>
-                <div class="stat-line"><span>Win%: 50.0%</span></div>
-            </div>
+    <!-- Great -->
+    <div class="tier-row">
+        <div class="tier-label gr">Great</div>
+        <div class="tier-content">
+            <img src="https://placehold.co/100x100/007A33/fff?text=BOS" class="team-logo" data-league="nba" title="Boston Celtics">
+            <img src="https://placehold.co/100x100/203731/ffb612?text=GB" class="team-logo" data-league="nfl" title="Green Bay Packers">
+            <img src="https://placehold.co/100x100/003087/fff?text=NYY" class="team-logo" data-league="mlb" title="New York Yankees">
+            <img src="https://placehold.co/100x100/FFB612/101820?text=PIT" class="team-logo" data-league="nfl" title="Pittsburgh Steelers">
+            <img src="https://placehold.co/100x100/002F6C/fff?text=SEA" class="team-logo" data-league="nfl" title="Seattle Seahawks">
         </div>
-        <div class="team-card" data-league="nba"><div class="team-name">Denver Nuggets</div><span class="league-tag">NBA</span></div>
-        <div class="team-card" data-league="nfl"><div class="team-name">SF 49ers</div><span class="league-tag">NFL</span></div>
     </div>
-</div>
 
-<div class="tier-row">
-    <div class="tier-label ba">Bad</div>
-    <div class="tier-content">
-        <div class="team-card" data-league="nhl">
-            <div class="team-name">Toronto Maple Leafs</div><span class="league-tag">NHL</span>
-            <div class="nhl-stats">
-                <div class="stat-line"><span>GP: 82</span><span>W: 46</span></div>
-                <div class="stat-line"><span>Win%: 56.1%</span></div>
-            </div>
+    <!-- Good -->
+    <div class="tier-row">
+        <div class="tier-label go">Good</div>
+        <div class="tier-content">
+            <img src="https://placehold.co/100x100/CE1141/fff?text=DET" class="team-logo" data-league="nhl" title="Detroit Red Wings">
+            <img src="https://placehold.co/100x100/002244/fff?text=DEN" class="team-logo" data-league="nfl" title="Denver Broncos">
+            <img src="https://placehold.co/100x100/AA0000/fff?text=SF" class="team-logo" data-league="nfl" title="San Francisco 49ers">
         </div>
-        <div class="team-card" data-league="nba"><div class="team-name">Brooklyn Nets</div><span class="league-tag">NBA</span></div>
-        <div class="team-card" data-league="nfl"><div class="team-name">Detroit Lions</div><span class="league-tag">NFL</span></div>
+    </div>
+
+    <!-- Bad -->
+     <div class="tier-row">
+        <div class="tier-label ba">Bad</div>
+        <div class="tier-content">
+            <img src="https://placehold.co/100x100/00205B/fff?text=TOR" class="team-logo" data-league="nhl" title="Toronto Maple Leafs">
+            <img src="https://placehold.co/100x100/000000/fff?text=BKN" class="team-logo" data-league="nba" title="Brooklyn Nets">
+            <img src="https://placehold.co/100x100/0076B6/B0B7BC?text=DET" class="team-logo" data-league="nfl" title="Detroit Lions">
+        </div>
     </div>
 </div>
 
 <script>
     function filter(league, btn) {
-        // Update Buttons
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        // Update active button state
+        document.querySelectorAll('.filter-nav button').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
 
-        // Filter Cards
-        const cards = document.querySelectorAll('.team-card');
-        cards.forEach(card => {
-            if (league === 'all' || card.getAttribute('data-league') === league) {
-                card.classList.remove('hidden');
+        // Filter circular logos based on the data-league attribute
+        const logos = document.querySelectorAll('.team-logo');
+        logos.forEach(logo => {
+            if (league === 'all' || logo.getAttribute('data-league') === league) {
+                logo.classList.remove('hidden');
             } else {
-                card.classList.add('hidden');
+                logo.classList.add('hidden');
             }
         });
 
-        // Hide Empty Tiers
+        // Hide tier rows that have no visible logos after filtering
         document.querySelectorAll('.tier-row').forEach(row => {
-            const visibleCards = row.querySelectorAll('.team-card:not(.hidden)');
-            if (visibleCards.length === 0) {
+            const visibleLogos = row.querySelectorAll('.team-logo:not(.hidden)');
+            if (visibleLogos.length === 0) {
                 row.classList.add('hidden');
             } else {
                 row.classList.remove('hidden');
