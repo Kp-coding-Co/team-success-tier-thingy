@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sports Team Finder Dashboard</title>
+    <title>Ultimate Team Tier Dashboard</title>
     <style>
         :root {
             --bg: #1e1e1e;
@@ -76,7 +76,7 @@
         }
 
         .tier-label {
-            width: 100px;
+            width: 120px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -93,27 +93,30 @@
             display: flex;
             flex-wrap: wrap;
             padding: 10px;
-            gap: 10px;
+            gap: 8px;
             flex-grow: 1;
             align-items: center;
         }
 
-        /* Circular Logo Style */
+        /* Adjusted Circular Logo Style for Real Logos */
         .team-logo {
-            width: 65px;
-            height: 65px;
+            width: 55px;
+            height: 55px;
             border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid #333;
-            background-color: #fff;
+            object-fit: contain; /* Ensures the whole logo is visible */
+            padding: 4px; /* Gives breathing room inside the circle */
+            background-color: #ffffff; /* White background for contrast */
+            border: 2px solid #444;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
         }
 
         .team-logo:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 10px rgba(255,255,255,0.5);
+            transform: scale(1.2);
+            box-shadow: 0 0 15px rgba(255,255,255,0.4);
             border-color: #fff;
+            z-index: 10;
+            position: relative;
         }
 
         /* Tier Colors */
@@ -124,7 +127,7 @@
         .me { background-color: var(--meh); }
         .ba { background-color: var(--bad); }
         .ds { background-color: var(--dogshit); }
-        .tn { background-color: var(--too-new); }
+        .tn { background-color: var(--too-new); font-size: 0.8rem; }
 
         .hidden { display: none !important; }
     </style>
@@ -148,13 +151,17 @@
     <div class="tier-row">
         <div class="tier-label bb">Blue Bloods</div>
         <div class="tier-content">
-            <!-- Replace the src links below with your actual image URLs -->
-            <img src="https://placehold.co/100x100/BD3039/fff?text=BOS" class="team-logo" data-league="mlb" title="Boston Red Sox">
-            <img src="https://placehold.co/100x100/6F263D/fff?text=COL" class="team-logo" data-league="nhl" title="Colorado Avalanche">
-            <img src="https://placehold.co/100x100/1D428A/ffc72c?text=GSW" class="team-logo" data-league="nba" title="Golden State Warriors">
-            <img src="https://placehold.co/100x100/E31837/fff?text=KC" class="team-logo" data-league="nfl" title="Kansas City Chiefs">
-            <img src="https://placehold.co/100x100/002868/fff?text=NE" class="team-logo" data-league="nfl" title="New England Patriots">
-            <img src="https://placehold.co/100x100/002868/fff?text=TB" class="team-logo" data-league="nhl" title="Tampa Bay Lightning">
+            <img src="https://a.espncdn.com/i/teamlogos/mlb/500/bos.png" class="team-logo" data-league="mlb" title="Boston Red Sox">
+            <img src="https://a.espncdn.com/i/teamlogos/nhl/500/col.png" class="team-logo" data-league="nhl" title="Colorado Avalanche">
+            <img src="https://a.espncdn.com/i/teamlogos/nba/500/gsw.png" class="team-logo" data-league="nba" title="Golden State Warriors">
+            <img src="https://a.espncdn.com/i/teamlogos/nfl/500/kc.png" class="team-logo" data-league="nfl" title="Kansas City Chiefs">
+            <img src="https://a.espncdn.com/i/teamlogos/mlb/500/lad.png" class="team-logo" data-league="mlb" title="Los Angeles Dodgers">
+            <img src="https://a.espncdn.com/i/teamlogos/nba/500/lal.png" class="team-logo" data-league="nba" title="Los Angeles Lakers">
+            <img src="https://a.espncdn.com/i/teamlogos/nba/500/mia.png" class="team-logo" data-league="nba" title="Miami Heat">
+            <img src="https://a.espncdn.com/i/teamlogos/nfl/500/ne.png" class="team-logo" data-league="nfl" title="New England Patriots">
+            <img src="https://a.espncdn.com/i/teamlogos/nhl/500/pit.png" class="team-logo" data-league="nhl" title="Pittsburgh Penguins">
+            <img src="https://a.espncdn.com/i/teamlogos/nba/500/sas.png" class="team-logo" data-league="nba" title="San Antonio Spurs">
+            <img src="https://a.espncdn.com/i/teamlogos/nhl/500/tb.png" class="team-logo" data-league="nhl" title="Tampa Bay Lightning">
         </div>
     </div>
 
@@ -162,11 +169,16 @@
     <div class="tier-row">
         <div class="tier-label gr">Great</div>
         <div class="tier-content">
-            <img src="https://placehold.co/100x100/007A33/fff?text=BOS" class="team-logo" data-league="nba" title="Boston Celtics">
-            <img src="https://placehold.co/100x100/203731/ffb612?text=GB" class="team-logo" data-league="nfl" title="Green Bay Packers">
-            <img src="https://placehold.co/100x100/003087/fff?text=NYY" class="team-logo" data-league="mlb" title="New York Yankees">
-            <img src="https://placehold.co/100x100/FFB612/101820?text=PIT" class="team-logo" data-league="nfl" title="Pittsburgh Steelers">
-            <img src="https://placehold.co/100x100/002F6C/fff?text=SEA" class="team-logo" data-league="nfl" title="Seattle Seahawks">
+            <img src="https://a.espncdn.com/i/teamlogos/nba/500/bos.png" class="team-logo" data-league="nba" title="Boston Celtics">
+            <img src="https://a.espncdn.com/i/teamlogos/nfl/500/bal.png" class="team-logo" data-league="nfl" title="Baltimore Ravens">
+            <img src="https://a.espncdn.com/i/teamlogos/nhl/500/chi.png" class="team-logo" data-league="nhl" title="Chicago Blackhawks">
+            <img src="https://a.espncdn.com/i/teamlogos/nfl/500/gb.png" class="team-logo" data-league="nfl" title="Green Bay Packers">
+            <img src="https://a.espncdn.com/i/teamlogos/mlb/500/nyy.png" class="team-logo" data-league="mlb" title="New York Yankees">
+            <img src="https://a.espncdn.com/i/teamlogos/nba/500/okc.png" class="team-logo" data-league="nba" title="Oklahoma City Thunder">
+            <img src="https://a.espncdn.com/i/teamlogos/nfl/500/phi.png" class="team-logo" data-league="nfl" title="Philadelphia Eagles">
+            <img src="https://a.espncdn.com/i/teamlogos/nfl/500/pit.png" class="team-logo" data-league="nfl" title="Pittsburgh Steelers">
+            <img src="https://a.espncdn.com/i/teamlogos/mlb/500/sf.png" class="team-logo" data-league="mlb" title="San Francisco Giants">
+            <img src="https://a.espncdn.com/i/teamlogos/nfl/500/sea.png" class="team-logo" data-league="nfl" title="Seattle Seahawks">
         </div>
     </div>
 
@@ -174,19 +186,144 @@
     <div class="tier-row">
         <div class="tier-label go">Good</div>
         <div class="tier-content">
-            <img src="https://placehold.co/100x100/CE1141/fff?text=DET" class="team-logo" data-league="nhl" title="Detroit Red Wings">
-            <img src="https://placehold.co/100x100/002244/fff?text=DEN" class="team-logo" data-league="nfl" title="Denver Broncos">
-            <img src="https://placehold.co/100x100/AA0000/fff?text=SF" class="team-logo" data-league="nfl" title="San Francisco 49ers">
+            <img src="https://a.espncdn.com/i/teamlogos/mlb/500/atl.png" class="team-logo" data-league="mlb" title="Atlanta Braves">
+            <img src="https://a.espncdn.com/i/teamlogos/nhl/500/bos.png" class="team-logo" data-league="nhl" title="Boston Bruins">
+            <img src="https://a.espncdn.com/i/teamlogos/nba/500/cle.png" class="team-logo" data-league="nba" title="Cleveland Cavaliers">
+            <img src="https://a.espncdn.com/i/teamlogos/nba/500/den.png" class="team-logo" data-league="nba" title="Denver Nuggets">
+            <img src="https://a.espncdn.com/i/teamlogos/nhl/500/det.png" class="team-logo" data-league="nhl" title="Detroit Red Wings">
+            <img src="https://a.espncdn.com/i/teamlogos/nhl/500/fla.png" class="team-logo" data-league="nhl" title="Florida Panthers">
+            <img src="https://a.espncdn.com/i/teamlogos/mlb/500/hou.png" class="team-logo" data-league="mlb" title="Houston Astros">
+            <img src="https://a.espncdn.com/i/teamlogos/nfl/500/ind.png" class="team-logo" data-league="nfl" title="Indianapolis Colts">
+            <img src="https://a.espncdn.com/i/teamlogos/nhl/500/lak.png" class="team-logo" data-league="nhl" title="Los Angeles Kings">
+            <img src="https://a.espncdn.com/i/teamlogos/nba/500/mil.png" class="team-logo" data-league="nba" title="Milwaukee Bucks">
+            <img src="https://a.espncdn.com/i/teamlogos/nhl/500/nj.png" class="team-logo" data-league="nhl" title="New Jersey Devils">
+            <img src="https://a.espncdn.com/i/teamlogos/nfl/500/nyg.png" class="team-logo" data-league="nfl" title="New York Giants">
+            <img src="https://a.espncdn.com/i/teamlogos/nfl/500/sf.png" class="team-logo" data-league="nfl" title="San Francisco 49ers">
+            <img src="https://a.espncdn.com/i/teamlogos/mlb/500/stl.png" class="team-logo" data-league="mlb" title="St. Louis Cardinals">
+            <img src="https://a.espncdn.com/i/teamlogos/nfl/500/tb.png" class="team-logo" data-league="nfl" title="Tampa Bay Buccaneers">
+        </div>
+    </div>
+
+    <!-- Decent -->
+    <div class="tier-row">
+        <div class="tier-label de">Decent</div>
+        <div class="tier-content">
+            <img src="https://a.espncdn.com/i/teamlogos/nfl/500/buf.png" class="team-logo" data-league="nfl" title="Buffalo Bills">
+            <img src="https://a.espncdn.com/i/teamlogos/nhl/500/car.png" class="team-logo" data-league="nhl" title="Carolina Hurricanes">
+            <img src="https://a.espncdn.com/i/teamlogos/mlb/500/chc.png" class="team-logo" data-league="mlb" title="Chicago Cubs">
+            <img src="https://a.espncdn.com/i/teamlogos/nba/500/dal.png" class="team-logo" data-league="nba" title="Dallas Mavericks">
+            <img src="https://a.espncdn.com/i/teamlogos/nhl/500/dal.png" class="team-logo" data-league="nhl" title="Dallas Stars">
+            <img src="https://a.espncdn.com/i/teamlogos/nfl/500/den.png" class="team-logo" data-league="nfl" title="Denver Broncos">
+            <img src="https://a.espncdn.com/i/teamlogos/nba/500/det.png" class="team-logo" data-league="nba" title="Detroit Pistons">
+            <img src="https://a.espncdn.com/i/teamlogos/nhl/500/edm.png" class="team-logo" data-league="nhl" title="Edmonton Oilers">
+            <img src="https://a.espncdn.com/i/teamlogos/nba/500/hou.png" class="team-logo" data-league="nba" title="Houston Rockets">
+            <img src="https://a.espncdn.com/i/teamlogos/nfl/500/lar.png" class="team-logo" data-league="nfl" title="Los Angeles Rams">
+            <img src="https://a.espncdn.com/i/teamlogos/nfl/500/min.png" class="team-logo" data-league="nfl" title="Minnesota Vikings">
+            <img src="https://a.espncdn.com/i/teamlogos/nhl/500/mtl.png" class="team-logo" data-league="nhl" title="Montreal Canadiens">
+            <img src="https://a.espncdn.com/i/teamlogos/nhl/500/nyr.png" class="team-logo" data-league="nhl" title="New York Rangers">
+            <img src="https://a.espncdn.com/i/teamlogos/mlb/500/oak.png" class="team-logo" data-league="mlb" title="Oakland Athletics">
+            <img src="https://a.espncdn.com/i/teamlogos/mlb/500/phi.png" class="team-logo" data-league="mlb" title="Philadelphia Phillies">
+            <img src="https://a.espncdn.com/i/teamlogos/mlb/500/tex.png" class="team-logo" data-league="mlb" title="Texas Rangers">
+            <img src="https://a.espncdn.com/i/teamlogos/nba/500/tor.png" class="team-logo" data-league="nba" title="Toronto Raptors">
+            <img src="https://a.espncdn.com/i/teamlogos/nhl/500/wsh.png" class="team-logo" data-league="nhl" title="Washington Capitals">
+        </div>
+    </div>
+
+    <!-- Meh -->
+    <div class="tier-row">
+        <div class="tier-label me">Meh</div>
+        <div class="tier-content">
+            <img src="https://a.espncdn.com/i/teamlogos/nhl/500/ana.png" class="team-logo" data-league="nhl" title="Anaheim Ducks">
+            <img src="https://a.espncdn.com/i/teamlogos/mlb/500/ari.png" class="team-logo" data-league="mlb" title="Arizona Diamondbacks">
+            <img src="https://a.espncdn.com/i/teamlogos/nba/500/atl.png" class="team-logo" data-league="nba" title="Atlanta Hawks">
+            <img src="https://a.espncdn.com/i/teamlogos/nhl/500/cgy.png" class="team-logo" data-league="nhl" title="Calgary Flames">
+            <img src="https://a.espncdn.com/i/teamlogos/nfl/500/chi.png" class="team-logo" data-league="nfl" title="Chicago Bears">
+            <img src="https://a.espncdn.com/i/teamlogos/nba/500/chi.png" class="team-logo" data-league="nba" title="Chicago Bulls">
+            <img src="https://a.espncdn.com/i/teamlogos/nfl/500/cin.png" class="team-logo" data-league="nfl" title="Cincinnati Bengals">
+            <img src="https://a.espncdn.com/i/teamlogos/mlb/500/cle.png" class="team-logo" data-league="mlb" title="Cleveland Guardians">
+            <img src="https://a.espncdn.com/i/teamlogos/nba/500/ind.png" class="team-logo" data-league="nba" title="Indiana Pacers">
+            <img src="https://a.espncdn.com/i/teamlogos/mlb/500/kc.png" class="team-logo" data-league="mlb" title="Kansas City Royals">
+            <img src="https://a.espncdn.com/i/teamlogos/mlb/500/laa.png" class="team-logo" data-league="mlb" title="Los Angeles Angels">
+            <img src="https://a.espncdn.com/i/teamlogos/nfl/500/lac.png" class="team-logo" data-league="nfl" title="Los Angeles Chargers">
+            <img src="https://a.espncdn.com/i/teamlogos/nhl/500/nsh.png" class="team-logo" data-league="nhl" title="Nashville Predators">
+            <img src="https://a.espncdn.com/i/teamlogos/nfl/500/no.png" class="team-logo" data-league="nfl" title="New Orleans Saints">
+            <img src="https://a.espncdn.com/i/teamlogos/nba/500/nyk.png" class="team-logo" data-league="nba" title="New York Knicks">
+            <img src="https://a.espncdn.com/i/teamlogos/mlb/500/nym.png" class="team-logo" data-league="mlb" title="New York Mets">
+            <img src="https://a.espncdn.com/i/teamlogos/nhl/500/ott.png" class="team-logo" data-league="nhl" title="Ottawa Senators">
+            <img src="https://a.espncdn.com/i/teamlogos/nba/500/phi.png" class="team-logo" data-league="nba" title="Philadelphia 76ers">
+            <img src="https://a.espncdn.com/i/teamlogos/nhl/500/phi.png" class="team-logo" data-league="nhl" title="Philadelphia Flyers">
+            <img src="https://a.espncdn.com/i/teamlogos/nba/500/por.png" class="team-logo" data-league="nba" title="Portland Trail Blazers">
+            <img src="https://a.espncdn.com/i/teamlogos/nhl/500/sj.png" class="team-logo" data-league="nhl" title="San Jose Sharks">
+            <img src="https://a.espncdn.com/i/teamlogos/nhl/500/stl.png" class="team-logo" data-league="nhl" title="St. Louis Blues">
+            <img src="https://a.espncdn.com/i/teamlogos/mlb/500/tor.png" class="team-logo" data-league="mlb" title="Toronto Blue Jays">
+            <img src="https://a.espncdn.com/i/teamlogos/nba/500/utah.png" class="team-logo" data-league="nba" title="Utah Jazz">
+            <img src="https://a.espncdn.com/i/teamlogos/mlb/500/wsh.png" class="team-logo" data-league="mlb" title="Washington Nationals">
         </div>
     </div>
 
     <!-- Bad -->
-     <div class="tier-row">
+    <div class="tier-row">
         <div class="tier-label ba">Bad</div>
         <div class="tier-content">
-            <img src="https://placehold.co/100x100/00205B/fff?text=TOR" class="team-logo" data-league="nhl" title="Toronto Maple Leafs">
-            <img src="https://placehold.co/100x100/000000/fff?text=BKN" class="team-logo" data-league="nba" title="Brooklyn Nets">
-            <img src="https://placehold.co/100x100/0076B6/B0B7BC?text=DET" class="team-logo" data-league="nfl" title="Detroit Lions">
+            <img src="https://a.espncdn.com/i/teamlogos/nfl/500/atl.png" class="team-logo" data-league="nfl" title="Atlanta Falcons">
+            <img src="https://a.espncdn.com/i/teamlogos/mlb/500/bal.png" class="team-logo" data-league="mlb" title="Baltimore Orioles">
+            <img src="https://a.espncdn.com/i/teamlogos/nba/500/bkn.png" class="team-logo" data-league="nba" title="Brooklyn Nets">
+            <img src="https://a.espncdn.com/i/teamlogos/nhl/500/buf.png" class="team-logo" data-league="nhl" title="Buffalo Sabres">
+            <img src="https://a.espncdn.com/i/teamlogos/nfl/500/car.png" class="team-logo" data-league="nfl" title="Carolina Panthers">
+            <img src="https://a.espncdn.com/i/teamlogos/mlb/500/chw.png" class="team-logo" data-league="mlb" title="Chicago White Sox">
+            <img src="https://a.espncdn.com/i/teamlogos/nfl/500/dal.png" class="team-logo" data-league="nfl" title="Dallas Cowboys">
+            <img src="https://a.espncdn.com/i/teamlogos/mlb/500/det.png" class="team-logo" data-league="mlb" title="Detroit Tigers">
+            <img src="https://a.espncdn.com/i/teamlogos/nfl/500/lv.png" class="team-logo" data-league="nfl" title="Las Vegas Raiders">
+            <img src="https://a.espncdn.com/i/teamlogos/nba/500/lac.png" class="team-logo" data-league="nba" title="LA Clippers">
+            <img src="https://a.espncdn.com/i/teamlogos/nba/500/mem.png" class="team-logo" data-league="nba" title="Memphis Grizzlies">
+            <img src="https://a.espncdn.com/i/teamlogos/mlb/500/mia.png" class="team-logo" data-league="mlb" title="Miami Marlins">
+            <img src="https://a.espncdn.com/i/teamlogos/mlb/500/mil.png" class="team-logo" data-league="mlb" title="Milwaukee Brewers">
+            <img src="https://a.espncdn.com/i/teamlogos/nba/500/min.png" class="team-logo" data-league="nba" title="Minnesota Timberwolves">
+            <img src="https://a.espncdn.com/i/teamlogos/mlb/500/min.png" class="team-logo" data-league="mlb" title="Minnesota Twins">
+            <img src="https://a.espncdn.com/i/teamlogos/nhl/500/nyi.png" class="team-logo" data-league="nhl" title="New York Islanders">
+            <img src="https://a.espncdn.com/i/teamlogos/nba/500/orl.png" class="team-logo" data-league="nba" title="Orlando Magic">
+            <img src="https://a.espncdn.com/i/teamlogos/nba/500/phx.png" class="team-logo" data-league="nba" title="Phoenix Suns">
+            <img src="https://a.espncdn.com/i/teamlogos/mlb/500/tb.png" class="team-logo" data-league="mlb" title="Tampa Bay Rays">
+            <img src="https://a.espncdn.com/i/teamlogos/nfl/500/ten.png" class="team-logo" data-league="nfl" title="Tennessee Titans">
+            <img src="https://a.espncdn.com/i/teamlogos/nhl/500/tor.png" class="team-logo" data-league="nhl" title="Toronto Maple Leafs">
+            <img src="https://a.espncdn.com/i/teamlogos/nhl/500/van.png" class="team-logo" data-league="nhl" title="Vancouver Canucks">
+            <img src="https://a.espncdn.com/i/teamlogos/nfl/500/wsh.png" class="team-logo" data-league="nfl" title="Washington Commanders">
+            <img src="https://a.espncdn.com/i/teamlogos/nba/500/was.png" class="team-logo" data-league="nba" title="Washington Wizards">
+        </div>
+    </div>
+
+    <!-- Dogshit -->
+    <div class="tier-row">
+        <div class="tier-label ds">Dogshit</div>
+        <div class="tier-content">
+            <img src="https://a.espncdn.com/i/teamlogos/nfl/500/ari.png" class="team-logo" data-league="nfl" title="Arizona Cardinals">
+            <img src="https://a.espncdn.com/i/teamlogos/mlb/500/cin.png" class="team-logo" data-league="mlb" title="Cincinnati Reds">
+            <img src="https://a.espncdn.com/i/teamlogos/nba/500/cha.png" class="team-logo" data-league="nba" title="Charlotte Hornets">
+            <img src="https://a.espncdn.com/i/teamlogos/nfl/500/cle.png" class="team-logo" data-league="nfl" title="Cleveland Browns">
+            <img src="https://a.espncdn.com/i/teamlogos/mlb/500/col.png" class="team-logo" data-league="mlb" title="Colorado Rockies">
+            <img src="https://a.espncdn.com/i/teamlogos/nhl/500/cbj.png" class="team-logo" data-league="nhl" title="Columbus Blue Jackets">
+            <img src="https://a.espncdn.com/i/teamlogos/nfl/500/det.png" class="team-logo" data-league="nfl" title="Detroit Lions">
+            <img src="https://a.espncdn.com/i/teamlogos/nfl/500/hou.png" class="team-logo" data-league="nfl" title="Houston Texans">
+            <img src="https://a.espncdn.com/i/teamlogos/nfl/500/jax.png" class="team-logo" data-league="nfl" title="Jacksonville Jaguars">
+            <img src="https://a.espncdn.com/i/teamlogos/nfl/500/mia.png" class="team-logo" data-league="nfl" title="Miami Dolphins">
+            <img src="https://a.espncdn.com/i/teamlogos/nhl/500/min.png" class="team-logo" data-league="nhl" title="Minnesota Wild">
+            <img src="https://a.espncdn.com/i/teamlogos/nba/500/nop.png" class="team-logo" data-league="nba" title="New Orleans Pelicans">
+            <img src="https://a.espncdn.com/i/teamlogos/nfl/500/nyj.png" class="team-logo" data-league="nfl" title="New York Jets">
+            <img src="https://a.espncdn.com/i/teamlogos/mlb/500/pit.png" class="team-logo" data-league="mlb" title="Pittsburgh Pirates">
+            <img src="https://a.espncdn.com/i/teamlogos/mlb/500/sd.png" class="team-logo" data-league="mlb" title="San Diego Padres">
+            <img src="https://a.espncdn.com/i/teamlogos/nba/500/sac.png" class="team-logo" data-league="nba" title="Sacramento Kings">
+            <img src="https://a.espncdn.com/i/teamlogos/mlb/500/sea.png" class="team-logo" data-league="mlb" title="Seattle Mariners">
+        </div>
+    </div>
+
+    <!-- Too New -->
+    <div class="tier-row">
+        <div class="tier-label tn">Too new to tell<br>(Joined 2010+)</div>
+        <div class="tier-content">
+            <img src="https://a.espncdn.com/i/teamlogos/nhl/500/ari.png" class="team-logo" data-league="nhl" title="Arizona Coyotes">
+            <img src="https://a.espncdn.com/i/teamlogos/nhl/500/vgk.png" class="team-logo" data-league="nhl" title="Vegas Golden Knights">
+            <img src="https://a.espncdn.com/i/teamlogos/nhl/500/sea.png" class="team-logo" data-league="nhl" title="Seattle Kraken">
+            <img src="https://a.espncdn.com/i/teamlogos/nhl/500/wpg.png" class="team-logo" data-league="nhl" title="Winnipeg Jets">
         </div>
     </div>
 </div>
